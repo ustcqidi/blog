@@ -2,6 +2,12 @@
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
 
+# deploy
+deploy:
+  type: git
+  repo: https://github.com/ustcqidi/ustcqidi.github.io.git
+  branch: master
+
 # Site
 title: 祁迪的博客
 subtitle: 
@@ -74,8 +80,9 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: landscape
+#theme: crisp
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
-deploy:
-  type:
+#deploy:
+#  type:
