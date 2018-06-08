@@ -1,6 +1,8 @@
 ---
-title: Qi Di's Resume
+title: 关于我
+date: 2018-06-08 17:36:59
 ---
+
 ### Work Experiences
 - [iQIYI](http://www.iqiyi.com/)
     - 2016.8-current
@@ -11,6 +13,8 @@ title: Qi Di's Resume
 - [Cisco](https://www.cisco.com/)
     - 2013.3-2015.8
     - Software Engineer
+
+<!-- more -->
 
 ### Skills
 - Android NDK

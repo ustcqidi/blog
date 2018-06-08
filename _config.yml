@@ -2,6 +2,10 @@
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
 
+# Social links
+social:
+  GitHub: https://github.com/ustcqidi || github
+
 # deploy
 deploy:
   type: git
@@ -11,11 +15,12 @@ deploy:
 # Site
 title: 祁迪的博客
 subtitle: 
-description:
-keywords:
-author: Qi Di
-language:
+description: 不忘初心，方得始终
+keywords: iOS
+author: 祁迪
+language: zh-Hans 
 timezone:
+avatar: https://avatars2.githubusercontent.com/u/2238185?s=460&v=4
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
