@@ -162,18 +162,21 @@ YYClassInfo实例化过程也有很多值得学习的地方，涉及了线程安
 }
 ```
 使用缓存可以保证不用每次都创建YYClassInfo对象，提高性能。这里有两个知识点需要mark一下：
-- 使用信号量保证线程安全
+- 使用GCD的信号量保证线程安全，多线程和并发这块非常重要，所以这里复习一下。iOS上实现多线程一般有pthread,NSThread,GCD和NSOperationQueue四种方式。
+
 - 使用Core Foundation的CFMutableDictionaryRef来作为缓存容器。这里必须提一下Core Foundation了，记得有次面试被问Core Foundation和Foundation的关系，我当时是一脸懵逼的，就瞎说一通啦。其实可以很简单地理解为，Core Foundation是C语言版本的Foundation，功能基本与Foundation对应，前缀是CFxxx的Core Foundation里面的方法，Foundation里面的函数前缀一般是NSxxx。CoreFoundation的方法有更高的性能，所以这里使用CFMutableDictionRef而不是NSMutableDiction来实现缓存。
-
-### 类型定义与转换
-
-## 怎么保证类型安全
 
 ## 如何做到对Model代码无侵入
 
+使用Category方式，定义的NSObject的category
+
 ## Model嵌套如何支持
 
+Model转换过程有类型判断，如果是自定义类型，会递归调用Model转换逻辑。
+
 ## 如何设计性能测试benchmark
+
+作者对比了现有的几个比较常用的Model库：JSONModel, Mantle, MJExtension等，对比的维度包括性能、功能、侵入性和容错性。
 
 ## 用到了哪些我不熟悉的语言特性
 1. Type Encodings 和 Declared Properties
@@ -182,9 +185,9 @@ YYClassInfo实例化过程也有很多值得学习的地方，涉及了线程安
 4. CoreFoundation中的CFMutableDictionaryRef
 5. Objective-C Runtime
 6. @package
-7. __unsafe_unretained 修饰符
+7. __unsafe_unretained<br>在 ARC 条件下，默认声明的对象是 __strong 类型的，赋值时有可能会产生 retain/release 调用，如果一个变量在其生命周期内不会被释放，则使用 __unsafe_unretained 会节省很大的开销
 
-## 性能相关的Tips
+## YYModel性能相关的Tips
 ### 尽量用纯 C 函数、内联函数
 使用纯 C 函数可以避免 ObjC 的消息发送带来的开销。如果 C 函数比较小，使用 inline 可以避免一部分压栈弹栈等函数调用的开销。NSObject+YYModel中作者定义了一个force_inline宏，很多函数都是定义成内联的。
 
@@ -197,7 +200,24 @@ static force_inline NSDate *YYNSDateFromString(__unsafe_unretained NSString *str
 ...
 ```
 
+### 避免多余的内存管理方法
+在 ARC 条件下，默认声明的对象是 __strong 类型的，赋值时有可能会产生 retain/release 调用，如果一个变量在其生命周期内不会被释放，则使用 __unsafe_unretained 会节省很大的开销。
+
+访问具有 __weak 属性的变量时，实际上会调用 objc_loadWeak() 和 objc_storeWeak() 来完成，这也会带来很大的开销，所以要避免使用 __weak 属性。
+
+创建和使用对象时，要尽量避免对象进入 autoreleasepool，以避免额外的资源开销。
+
+### 遍历容器类时，选择更高效的方法
+相对于 Foundation 的方法来说，CoreFoundation 的方法有更高的性能，用 CFArrayApplyFunction() 和 CFDictionaryApplyFunction() 方法来遍历容器类能带来不少性能提升，但代码写起来会非常麻烦。
+
+### 避免 KVC
+Key-Value Coding 使用起来非常方便，但性能上要差于直接调用 Getter/Setter，所以如果能避免 KVC 而用 Getter/Setter 代替，性能会有较大提升。
+
+### 避免 Getter/Setter 调用
+如果能直接访问 ivar，则尽量使用 ivar 而不要使用 Getter/Setter 这样也能节省一部分开销。
+
 ## 参考资料
 1. [iOS JSON 模型转换库评测](https://blog.ibireme.com/2015/10/23/ios_model_framework_benchmark)
 2. [揭秘 YYModel 的魔法（上）](https://juejin.im/post/5a097435f265da431769a49c)
 3. [揭秘 YYModel 的魔法（下）](https://juejin.im/post/5a1296e36fb9a044fb075d5e)
+4. [深入理解Objective-C：Category](https://tech.meituan.com/DiveIntoCategory.html)
