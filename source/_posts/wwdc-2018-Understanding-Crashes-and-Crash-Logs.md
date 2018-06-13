@@ -4,7 +4,7 @@ date: 2018-06-12 12:58:51
 tags: [iOS,WWDC]
 ---
 
-本文内容基于WWDC 2018中 [Understanding Crashes and Crash Logs](https://developer.apple.com/videos/play/wwdc2018/414/) 整理的。下面这段是关于该视频的简介，这个Session主要介绍iOS Crash相关的知识：如何分析crash logs，怎么调试和修复crash问题，比如难以重现的内存问题和多线程问题。
+本文内容基于WWDC 2018中 [Understanding Crashes and Crash Logs](https://developer.apple.com/videos/play/wwdc2018/414/) 整理的。这个Session主要介绍iOS Crash相关的知识：如何分析crash logs，怎么调试和修复crash问题，比如难以重现的内存问题和多线程问题。
 
 >Sudden app crashes are a source of bad user experience and app review rejections. Learn how crash logs can be analyzed, what information they contain and how to diagnose the causes of crashes, including hard-to-reproduce memory corruptions and multithreading issues.
 
