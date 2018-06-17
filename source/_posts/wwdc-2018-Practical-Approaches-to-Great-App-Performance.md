@@ -10,7 +10,7 @@ tags: [iOS, Performance, WWDC]
 
 <!-- more -->
 
-整个Presentation分为两个部分，第一部分是一位开发Xcode的老哥，主题是Approaching Performance A framework for getting started，我的理解其实就是介绍了性能调优的一些基本套路。
+整个Presentation分为两个部分，第一部分是一位开发Xcode的老哥，主题是Approaching Performance A framework for getting started，其实就是介绍了性能调优的一些基本套路。
 
 ## Measure
 
