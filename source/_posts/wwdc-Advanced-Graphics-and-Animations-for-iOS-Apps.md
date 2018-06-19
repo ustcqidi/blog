@@ -64,6 +64,10 @@ tags: [WWDC, iOS, Animation, Render, Performance]
 - 每个tile存放到SoC缓存中
 
 ### Render passes 
+- Application  把动画send to render server
+- 
+- GPU Command Buffer
+
 ![](./wwdc-Advanced-Graphics-and-Animations-for-iOS-Apps/pass.png)
 
 ### Example masking

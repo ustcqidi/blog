@@ -186,6 +186,10 @@ Model转换过程有类型判断，如果是自定义类型，会递归调用Mod
 5. Objective-C Runtime
 6. @package
 7. __unsafe_unretained<br>在 ARC 条件下，默认声明的对象是 __strong 类型的，赋值时有可能会产生 retain/release 调用，如果一个变量在其生命周期内不会被释放，则使用 __unsafe_unretained 会节省很大的开销
+8. __bridge<br>Foundation 对象和 Core Foundation对象间的转换，ARC只支持管理Objective-C对象，不支持Core Foundation对象，必须使用CFRetain和CFRelease来进行内存管理。那么当使用Objective-C 和 Core Foundation 对象相互转换的时候，必须让编译器知道，到底由谁来负责释放对象，是否交给ARC处理。
+    - __bridge （不改变对象所有权）
+    - __bridge_retained 或者 CFBridgingRetain()（解除 ARC 所有权）
+    - __bridge_transfer 或者 CFBridgingRelease(）（给予 ARC 所有权）
 
 ## YYModel性能相关的Tips
 ### 尽量用纯 C 函数、内联函数
@@ -221,3 +225,6 @@ Key-Value Coding 使用起来非常方便，但性能上要差于直接调用 Ge
 2. [揭秘 YYModel 的魔法（上）](https://juejin.im/post/5a097435f265da431769a49c)
 3. [揭秘 YYModel 的魔法（下）](https://juejin.im/post/5a1296e36fb9a044fb075d5e)
 4. [深入理解Objective-C：Category](https://tech.meituan.com/DiveIntoCategory.html)
+5. [Objective-C 和 Core Foundation 对象相互转换的内存管理总结](https://blog.csdn.net/yiyaaixuexi/article/details/8553659)
+6. [深入理解__bridge - OC对象与C++对象的引用转换](https://yq.aliyun.com/articles/58964)
+7. [iOS ARC 内存管理要点](http://www.samirchen.com/ios-arc/)
