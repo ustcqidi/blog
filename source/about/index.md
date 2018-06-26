@@ -3,35 +3,76 @@ title: 关于我
 date: 2018-06-08 17:36:59
 ---
 
-### Work Experiences
-- [iQIYI](http://www.iqiyi.com/)
-    - 2016.8-current
-    - Mobile App Architect
-- [Meili Inc.](http://www.meili-inc.com/)
-    - 2015.8-2016.8
-    - Mobile App Dev
-- [Cisco](https://www.cisco.com/)
-    - 2013.3-2015.8
-    - Software Engineer
+## 个人信息
+- 祁迪/男/1988
+- 硕士/中国科技大学计算机系 
+- 工作年限：5年以上
+
+## 联系方式
+- 手机/微信：177 3004 1284
+- Email：qidi@mail.ustc.edu.cn
+
+## 教育背景
+### 中国科学技术大学
+2010.9-2013.4 | 计算机应用技术专业硕士
+
+### 安徽科技学院
+2016.9-2010.7 | 计算机科学技术学士
 
 <!-- more -->
 
-### Skills
-- Android NDK
-- iOS App Dev
-- Cross Platform Base Library Dev for Mobile App
-- React Native
-- H5 Hybrid
-- Know a little bit of machine learning
+## 技能清单
+- 熟悉Android NDK
+- 熟悉iOS应用开发
+- 熟悉React Native技术栈
+- 熟悉移动端跨平台基础库的开发、优化、维护
+- 熟悉常见的开发流程，具备项目管理能力
+- 具备1亿级别日活App基础架构经验，熟悉App架构及基础设施的演进、落地与推广
+- 了解Android应用开发
+- 了解流媒体应用开发及ffmpeg , webrtc等开源项目
+- 对深度学习及其应用比较有兴趣
 
-### Education
-- University of Science and Technology of China
-    - 2010.9-2013.4
-    - Master in Computer Science
-- Anhui University of Science and Technology
-    - 2016.9-2010.7
-    - B.S. in Computer Science
+## 工作经验
+### [爱奇艺](http://www.iqiyi.com/)
+2016.8-至今 | 移动架构师
+负责移动端基础框架研发相关工作，主要关注App开发框架、性能、崩溃率、开发效率和新技术调研
 
-### Contact
-- WeChat: 17730041284
-- Email: qidi@mail.ustc.edu.cn
+### [美丽联合集团](http://www.meili-inc.com/) 
+2015.8-2016.8 | 资深工程师
+负责移动端跨平台组件的设计、开发与维护，支持蘑菇街集团内App的业务需求
+
+### [Cisco](https://www.cisco.com/)
+2013.3-2015.8 | 软件工程师
+参与思科WebEx视频会议Android版本的开发，支持高质量的多点语音(支持纯VoIP以 及电话与VoIP混合)、多点视频会议、屏幕共享等
+
+## 主要项目经验
+### 动态化跨平台框架 
+负责方案的调研、设计与实现。基于React Native实现了爱奇艺的移动端跨平台开发框架，完成了基础库开发、工具链开发、性能优化，并在爱奇艺公司内部各个业务线推广与落地。目前已经在Android和iOS双端稳定运行，有10个以上业务方接入改框架，线上页面数量100个以上，节省了开发人力，提高开发效率
+
+### H5 Hybrid容器
+负责爱奇艺 App H5 容器框架开发与优化，包括H5页面模板化与离线化、预加载、网络优化、H5 页面全链路性能监控等，提升App内部H5页面加载速度超过20%
+
+### 移动端性能监控体系
+参与开发了移动APP性能监控体系项目，搭建支持上亿日活用户的实时数据平台
+
+### Chromium内核移植与定制 
+- 基于Chromium内核，开发定制了独立Android WebView引擎，集成到蘑菇街H5容器中，并在实际业务场景中落地与推广。独立WebView引擎解决了WebView碎片化问题，优化了蘑菇街 H5 页面使用体验，App内部H5页面加载耗时平均减少800毫秒
+- 实时跟进线上稳定性以及兼容性问题，及时修复问题，逐步把独立WebView引擎覆盖了提升到了85%
+- 设计并实现了Chromium内核动态加载机制，解决了集成包大小问题
+- 基于Chromium网络栈，定制了蘑菇街App跨平台基础网络库，优化了App内部网络加载速度：App随机加载20张图片，定制后的网络库比系统网络库提速接近30%
+
+### Cisco WebEx视频会议系统Android客户端
+- Android Native 崩溃/异常捕捉处理、堆栈收集
+- Security问题修复
+- Android Native SSL Socket
+- Android HTTP Proxy
+- 会议数据加/解密
+- 视频会议、纯VoIP会议、电话VoIP混合会议Session管理
+- 多路视频渲染
+
+## 开源项目
+- 深度学习颜值评分模型: [BeautyPredict](https://github.com/ustcqidi/BeautyPredict)
+
+## 会议与活动
+- 思科创新论坛 Best Practice 项目: 移动视频会议多屏互动
+- WOT百城沙龙高可用设计架构专场：基于Chromium内核的Hybrid体验优化
