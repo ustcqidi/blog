@@ -26,14 +26,14 @@ Person *p = [[Person alloc] init];
 objc_msgSend(p, @selector(eat));
 ```
 主要流程：
-- 查找selector
+- 查找selector的实现IMP
 - 消息发送 objc_msgSend
 
 本质上OC方法调用是通过objc_msgSend给target发送消息，如果这个消息没有对应的实现，就回进入消息转发流程。
 
 ## 消息转发
 
-开发过程中经常会遇到 **** unrecognized selector sent to instance 这样的崩溃，表明你曾向某个对象发送了一条无法解读的消息。当一个对象收到无法解读的消息后会如何处理，也就是说对象无法响应选择子(方法)，这时就要进入到消息转发机制的流程（动态方法决议）, 整体流程如下图：
+在发消息的时候，如果 selector 有对应的 IMP ,则直接执行；如果没有，这时就要进入到消息转发流程。依次有 resolveInstanceMethod 、forwardingTargetForSelector、forwardInvocation，如果消息转发流程中3个步骤任然没有找到对应的selector的IMP，就会抛出 **** unrecognized selector sent to instance 这样的异常，表明你曾向某个对象发送了一条无法解读的消息。整体流程如下图：
 
 ![](./oc-runtime-dynamic-invocation/forward.png)
 
@@ -84,3 +84,5 @@ if (Person) {
 - [Objective-C对象模型及应用](http://blog.devtang.com/2013/10/15/objective-c-object-model/)
 - [面向切面编程之 Aspects 源码解析及应用](http://wereadteam.github.io/2016/06/30/Aspects/)
 - [iOS 消息转发流程](https://juejin.im/post/5a30c6fdf265da4319564272)
+- [iOS开发教程之Objc Runtime笔记](https://www.tuicool.com/articles/Av63EfJ)
+- [从 Aspects 源码中我学到了什么？](https://lision.me/aspects/)
