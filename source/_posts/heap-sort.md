@@ -1,0 +1,127 @@
+---
+title: 堆排序
+date: 2018-07-08 11:32:26
+tags: [算法, 排序, 堆]
+---
+
+### 概要
+本文主要讨论堆的基础知识、算法细节、Leetcode相关题目的解题思路以及堆的实际应用
+
+### 什么是堆
+堆是一个完全二叉树(除了最底层以外，其他每一层都是满的)，因此堆可以用数组表示，普通二叉树通常用链表表示。堆用数组表示如下图：
+
+![](http://bubkoo.qiniudn.com/heap-and-array.png)
+
+对于下标为i的节点，可以很容易计算出该节点的父节点、子节点的下标:
+- Parent(i) = floor(i/2)
+- LeftChild(i) = 2*i
+- RightChild(i) = 2*i + 1
+
+<!--more-->
+
+![](http://bubkoo.qiniudn.com/heap-and-array-parent-children.png)
+
+堆一般分为大根堆和小根堆
+- 大根堆
+  - 大根堆的最大值都出现在根节点
+  - 堆中每个父节点的值都大于子节点值
+
+![](http://bubkoo.qiniudn.com/max-heap.png)
+
+- 小根堆
+  - 小根堆的最小值都出现在根节点
+  - 堆中每个父节点的值都小于子节点值
+
+![](http://bubkoo.qiniudn.com/min-heap.png)
+
+### 堆排序
+每次取出堆顶的数(最大/最小)取出，再将剩余的节点调整成大根堆/小根堆，对排序定义了一下几种操作:
+- 大/小根堆调整
+- 创建最大堆
+- 堆排序
+
+下面以大根堆为例，说明堆排序的三个过程: 最大堆调整 (MAX-HEAPIFY) 是保证大根堆的性质，是创建大根堆的核心子程序(递归调用)。
+
+![](http://bubkoo.qiniudn.com/MAX%E2%80%90HEAPIFY-Procedure.png)
+
+创建大根堆只需递归调用最大堆调整即可
+
+![](http://bubkoo.qiniudn.com/building-a-heap.png)
+
+堆排序
+
+![](http://bubkoo.qiniudn.com/HeapSort.png)
+
+堆排序动画演示:
+
+![](http://bubkoo.qiniudn.com/Sorting_heapsort_anim.gif
+)
+
+C++算法实现:
+```C++
+void max_heapify(int arr[], int start, int end) {
+  int dad = start;
+  int son = 2 * dad + 1;
+
+  while (son < end) {
+      if (son+1 < end && arr[son] < arr[son+1])
+        son++;
+
+      if(arr[dad] >= arr[son]) {
+        return;
+      } else {
+        swap(arr[dad], arr[son]);
+
+        dad = son;
+        son = dad*2+1;
+      }
+  }
+
+}
+
+void heap_sort(int arr[], int len) {
+    // 对初始化
+    for (int i = len/2 - 1; i >= 0; i--)
+      max_heapify(arr, i, len);
+
+    // 排序
+    for (int j = len-1; j > 0; j--) {
+      swap(arr[0], arr[j]);
+      max_heapify(arr, 0, j);
+    }
+}
+```
+
+### 复杂度
+- 时间复杂度 O(nlogn)
+- 空间复杂度 O(1)
+
+### Leetcode相关题解
+[Design Twitter](https://leetcode.com/problems/design-twitter/)
+设计类似Twitter的关注、取消关注、发表Twitter、获取好友发布的Twitter等基本功能，本题主要是设计合理的数据结构，表达用户之间的社交关系以及Post过的Twitter与用户的“隶属”关系
+
+数据结构
+- unordered_map存放followId和followeeId unordered_set,表示关注的人
+- unordered_map存放用户Id和tweetId vector键值对，表示某个用户的tweet文
+
+思路
+- 本质上是TOP K 问题
+- 使用堆解决
+- 学会使用std中的数据结构和算法
+
+### std基础知识
+- unordered_set
+- unordered_map
+- vector
+- priority_queue
+
+[Top K Frequent Elements](https://leetcode.com/problems/top-k-frequent-elements/)
+
+### 实际应用
+- 优先队列 (作业调度、定时器)
+- TOP K 问题
+
+### 参考资料
+[1] http://bubkoo.com/2014/01/14/sort-algorithm/heap-sort/
+[2] https://en.wikipedia.org/wiki/Heapsort
+[3] http://www.cplusplus.com/reference/map/multimap/
