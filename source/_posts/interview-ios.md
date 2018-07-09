@@ -5,6 +5,10 @@ tags:
 ---
 
 # iOS
+## 性能优化
+
+<img src="./interview-ios/iOS_perf.svg">
+
 ## block
 ### 什么时候在 block 里面用 self, 不需要使用 weak self
 我们知道, 在使用 block 的时候, 为了避免产生循环引用, 通常需要使用 weakSelf 与 strongSelf, 写下面这样的代码：
@@ -140,5 +144,3 @@ C++ 手写观察者
 
 # 参考资料
 1. [iOS面试准备之思维导图](https://mp.weixin.qq.com/s/snxHumanNb-BLUkweMxe6Q)
-
-<img src="./interview-ios/video.svg">
