@@ -64,7 +64,7 @@ AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status
 
 # 基础知识思维导图
 
-<img src="./interview-ios/c++.svg">
+<img src="./interview-ios/arch.svg">
 
 # 数据结构与算法
 ## 排序
@@ -138,6 +138,9 @@ x=x-y;
 - 引用初始化以后不能被改变，指针可以改变所指的对象
 - 不存在指向空值的引用，但是存在指向空值的指针
 
+### strlen, strcpy, strcat, strcmp的实现
+要考虑空指针保护，参考资料: [面试题之strcpy/strlen/strcat/strcmp的实现](https://blog.csdn.net/lisonglisonglisong/article/details/44278013)
+
 ## 面向对象
 ### 继承
 - 公有继承(public) <br>基类的公有成员和保护成员作为派生类的成员时，它们都保持原有的状态，而基类的私有成员仍然是私有的，不能被这个派生类的子类所访问。
@@ -148,6 +151,9 @@ x=x-y;
 派生类的析构函数用不上，会造成资源的泄漏
 
 ## 内存
+### memcpy和memmove的实现
+考虑地址重叠情况，参考资料: [memmove 和 memcpy的区别](https://www.cnblogs.com/luoquan/p/5265273.html)
+
 ### 描述内存分配方式以及它们的区别
 - 从静态存储区域分配。内存在程序编译的时候就已经分配好，这块内存在程序的整个运行期间都存在。例如全局变量，static 变量；
 - 在栈上创建。在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束时这些存储单元自动被释放。栈内存分配运算内置于处理器的指令集；
@@ -306,7 +312,14 @@ size_t string::length() {
 C++ 手写单例, 参考资料: [C++单例模式(线程安全，没有内存泄漏)](https://blog.csdn.net/jx232515/article/details/75635300)
 
 ## 观察者
-C++ 手写观察者
+举个博客订阅的例子，当博主发表新文章的时候，即博主状态发生了改变，那些订阅的读者就会收到通知，然后进行相应的动作，比如去看文章，或者收藏起来。博主与读者之间存在种一对多的依赖关系。
+
+参考资料:[设计模式C++实现（15）——观察者模式](https://blog.csdn.net/wuzhekai1985/article/details/6674984)
+
+## 适配器
+在STL中就用到了适配器模式。STL实现了一种数据结构，称为双端队列（deque），支持前后两段的插入与删除。STL实现栈和队列时，没有从头开始定义它们，而是直接使用双端队列实现的。这里双端队列就扮演了适配器的角色。队列用到了它的后端插入，前端删除。而栈用到了它的后端插入，后端删除。假设栈和队列都是一种顺序容器，有两种操作：压入和弹出。
+
+参考资料:[设计模式C++实现（3）——适配器模式](https://blog.csdn.net/wuzhekai1985/article/details/6665542)
 
 # 网络
 ## TCP 握手
