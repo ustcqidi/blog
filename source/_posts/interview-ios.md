@@ -62,8 +62,6 @@ AFNetworkReachabilityStatusBlock callback = ^(AFNetworkReachabilityStatus status
 
 特别是当我们正在执行 strongSelf.networkReachabilityStatusBlock(status); 这个 block 闭包时, 如果这个 block 执行到一半时 self 释放, 那么多半情况下会 Crash.
 
-# 跨平台
-
 # 数据结构与算法
 <br><img src="./interview-ios/algo.svg">
 
