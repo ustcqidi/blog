@@ -36,6 +36,8 @@ thread.Join();
 ```
 - thread_checker
 
+![](./chromium-base-thrad/thread_class.png)
+
 ## 一些启发
 - 基础库需要充分的单元测试，一方面保证代码质量，另一方面单元测试是很好的 code example，方便别人了解如何使用基础库
 
