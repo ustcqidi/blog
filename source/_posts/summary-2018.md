@@ -70,7 +70,7 @@ tags: [年度总结]
 - windbg
 - lldb
 
-### 学习 Chromium 基础库
+### 学习 Chromium 基础库
 #### base
 - 多线程
 - 字符串
