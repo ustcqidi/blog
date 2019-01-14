@@ -12,7 +12,7 @@ tags: [源代码]
 根据阅读源码的仔细程度，主要分为三个阶段/粒度：Module Level，Class Level，Detail Level
 
 ### Module Level
-浏览整个源码的目录结构，了解一下大体包含了哪些内容，搞清楚代码的大体组织结构，对项目整体有个感性的认识。
+浏览整个源码的目录结构，了解一下大体包含了哪些内容，搞清楚代码的大体组织结构，对项目整体有个感性的认识。
 
 ### Class Level
 针对某个特定模块，搞清楚每个源文件/类的大体作用，搞清楚主要的接口有哪些、类之间的调用/依赖关系等；此外还需要对该模块的主要功能流程有直观的认识。通常这个时候我会画一些思维导图/流程图帮助理解。
@@ -26,7 +26,7 @@ tags: [源代码]
 ![](./how-to-read-source-code/chromium_dns_workflow.png)
 
 ### Detail Level
-经过前面两个阶段，对源码还有了宏观上的认识，Detail Level 是根据具体需求，更加细粒度地研读代码，比如研究某个函数的实现细节，优化思路等等
+经过前面两个阶段，对源码有了宏观上的认识，Detail Level 是根据具体需求，更加细粒度地研读代码，比如研究某个函数的实现细节，优化思路等等
 
 ## 大家的观点
 知乎，HackNews 上有很多讨论此类话题的帖子：
@@ -64,7 +64,7 @@ My philosophy is that "It's all just code", which means that with enough patienc
 工具顺手，事半功倍，借助工具帮我们阅读并理解源码至关重要。
 
 ### IDE
-一般的中小型项目，选择一个用的顺手就行。我个人喜欢用 VS Code 和 Source Insigth。但是如果是代码量很大的项目，比如 Chromium，Linux 等，动辄就几千万行代码，一般的 IDE 是扛不住的。我曾经尝试用 VS Code 和 Visual Studio 读完整版的 Chromium 源码，结果查找一个符号的 reference 就卡到崩溃。最终我只好打开部分模块，这样基本是可以解决刚才所说的问题，但是前提是你要读的这部分代码相对比较独立；如果依赖很多模块的话，那么可能要丢失一些依赖或引用信息了。 所幸的是，Google 推出了一个在线阅读 Chromium 源码的方案： https://cs.chromium.org/ ，在这个也可以快速方便地阅读完整版 Chromium 源码，更棒的是，可以非常快速地查找引用，调用关系，修改历史，declarations, definition 和 class 的 outline 等等。 其他大型的项目一般也是有在线阅读的方案，如果是在没有，可以自己搭建一个这样的服务；Google 开源了一个 Code Search 的工具，具体细节可以在[这里](https://github.com/google/codesearch)
+一般的中小型项目，选择一个用的顺手就行。我个人喜欢用 VS Code 和 Source Insigth。但是如果是代码量很大的项目，比如 Chromium，Linux 等，动辄就几千万行代码，一般的 IDE 是扛不住的。我曾经尝试用 VS Code 和 Visual Studio 读完整版的 Chromium 源码，结果查找一个符号的 reference 就卡到崩溃。最终我只好打开部分模块，这样基本是可以解决刚才所说的问题，但是前提是你要读的这部分代码相对比较独立；如果依赖很多模块的话，那么可能要丢失一些依赖或引用信息了。 所幸的是，Google 推出了一个在线阅读 Chromium 源码的方案： https://cs.chromium.org/ ，在这个也可以快速方便地阅读完整版 Chromium 源码，更棒的是，可以非常快速地查找引用，调用关系，修改历史，declarations, definition 和 class 的 outline 等等。 其他大型的项目一般也是有在线阅读的方案，如果是在没有，可以自己搭建一个这样的服务；Google 开源了一个 Code Search 的工具，具体细节可以在[这里](https://github.com/google/codesearch)
 
 ### 流程图
-我个人喜欢用 XMind 和 https://www.websequencediagrams.com/
+我个人喜欢用 XMind 和 https://www.websequencediagrams.com/
