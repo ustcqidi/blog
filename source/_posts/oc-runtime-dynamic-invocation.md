@@ -8,7 +8,7 @@ tags: [iOS, Runtime]
 
 Runtime 是 Objective-C 特有的机制，iOS 进阶必须要掌握的知识点，面试过程中也会经常问。实际上也有很多开源库中，大量地使用 Runtime 来实现各种需求，比如大名鼎鼎的 JSPatch，YYModel 等。本文是我学习的笔记或随笔，内容可能比较散杂，由于 OC Runtime 内容很多，所以本文会不间断更新。先上一张思维导图，感受一下 OC Runtime 大体包含了哪些知识点。
 
-![](./oc-runtime-dynamic-invocation/overview.png)
+![](./oc-runtime-dynamic-invocation/oc_runtime.png)
 
 <!--more-->
 
