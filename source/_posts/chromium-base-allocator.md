@@ -67,6 +67,9 @@ PartitionRoot / PartitionRootGeneric 实现的功能类似于 malloc 和 free。
 - volatile 关键字
 - unittest 与 perftest 的思路
 
+## 参考资料
+1. [Understanding “volatile” qualifier in C | Set 2 (Examples)](https://www.geeksforgeeks.org/understanding-volatile-qualifier-in-c)
+
 ## 修改历史
 |修改时间|说明|
 |--|--|
