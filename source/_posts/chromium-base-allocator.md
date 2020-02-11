@@ -6,11 +6,11 @@ tags: [Chromium, allocator, 基础库]
 
 allocator 是 C++ std 中引入的，为了处理各种内存管理模式（比如共享内存、垃圾回收等）的内存分配问题，负责内存的分配、回收，对象的创建析构等。
 
+<!--more-->
+
 Chromium 的 base 库中有个 allocator 的目录，这是 Chromium 中使用的 allocator，为啥需要自己定义一个 allocator，不直接用系统的呢？ 这篇文章是我看代码过程的记录和总结。先看一下代码的目录结构：
 
 ![](./chromium-base-allocator/code_overview.png)
-
-<!--more-->
 
 ## Chromium 中的 allocator
 
