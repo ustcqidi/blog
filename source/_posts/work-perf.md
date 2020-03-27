@@ -27,3 +27,7 @@ git branch | grep "_trunk" | xargs git branch -D
 ### 删除所有不包含trunk的本地分支
 
 git branch | grep -v "trunk" | xargs git branch -D
+
+## 日志清理脚本
+
+一键清理垃圾日志文件，释放磁盘空间
