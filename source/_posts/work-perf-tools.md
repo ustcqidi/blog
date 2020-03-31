@@ -14,6 +14,9 @@ tags: [工作效率, 工具]
 ## [WebSequenceDiagrams](https://www.websequencediagrams.com/)
 在线时序图编辑器，整理业务流程、代码逻辑神器
 
+## [mermaid](https://github.com/mjbvz/vscode-markdown-mermaid)
+VSCode 插件，可以在 markdown 文档中直接编辑时序图，替代在线时序图编辑器
+
 ## [draw.io](https://draw.io)
 在线绘图工具，我通常用来绘制业务架构图
 
