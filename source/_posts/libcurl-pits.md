@@ -20,3 +20,10 @@ libcurl 作为动态库一部分，在动态库卸载时如果有 pending 的 dn
 - [相关讨论](https://curl.haxx.se/mail/lib-2016-07/0032.html)
 
 >I've got a situation where connection cache is kept through internet connection change (Wifi -> 3G for example). After network change cURL will try to reuse the connection from cache and will fail and open a new connection. The problem is that it takes ~20 seconds to understand that the connection was dead.
+
+## WebSocket 支持
+主要思路是使用 libcurl 作 https 通信，具体的 websocket 协议解析与封装需要自己实现。但是有个问题，libcurl 官方是不支持 websocket，因此 websocket 请求实例拿到 response 以后。这个实例可能会被 re-use。当然，民间也有一些基于 libcurl 支持 websocket 的讨论。
+
+- https://curl.haxx.se/video/curlup-2017/2017-03-19_05_Michael_Kaufmann_Websocket_support_for_curl.mp4
+- https://github.com/bagder/curl/pull/86
+- https://gist.github.com/mkauf/5ce3574ce821b2cf02986d4d701bfa86
