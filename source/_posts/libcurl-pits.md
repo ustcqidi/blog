@@ -27,3 +27,146 @@ libcurl 作为动态库一部分，在动态库卸载时如果有 pending 的 dn
 - https://curl.haxx.se/video/curlup-2017/2017-03-19_05_Michael_Kaufmann_Websocket_support_for_curl.mp4
 - https://github.com/bagder/curl/pull/86
 - https://gist.github.com/mkauf/5ce3574ce821b2cf02986d4d701bfa86
+
+## NTLM 认证
+这次升级 libcurl 到 7.71.1 版本后，NTLM 认证在 Android 和 iOS 上认证都会失败。之前升级 libcurl 到 7.55.1 时也遇到过 NTLM 认证的问题。
+
+相比其他认证方式，NTLM 认证过程更为复杂，整体流程如下图：
+
+![](./libcurl-pits/ntlm.png)
+
+Client 和 Server 需要几次“握手”交换认证信息，并且要求这几次“握手”的连接实例是同一个。http(s) 是无状态连接，libcurl 本身也有 connection reuse 机制，所以可能有各种原因会导致，交换 NTLM 认证信息的几次连接可能使用的不是同一个实例，这就会导致认证失败。
+
+我提交过两个 issue 给 libcurl，不过最终查下来都是我们使用方式的问题。
+
+- https://github.com/curl/curl/issues/3647
+- https://github.com/curl/curl/issues/5693
+
+这些使用上的坑也具有指导意义。
+
+### Could not re-use the connection for NTLM challenge, and always create a new connection
+
+#### Root Cause
+Connection 42 is still name resolving, can't reuse. So create a new connection 43, which cause NTLM challenge failed, and cause once more redirect. It's very wired because Connection 42 have left intact just now.
+
+
+#### Solution
+define the macro HAVE_GETPEERNAME
+
+#### abnormal logs
+
+```
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #42 to host exchange2016.com left intact
+[my_curl_debug_callback] This: 525811577016 TEXT :Issue another request to this URL: 'https://exchange2016.com/EWS/Exchange.asmx'
+[my_curl_debug_callback] This: 525811577016 TEXT :Found bundle for host exchange2016.com: 0x7a72130c30 [serially]
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #11 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #23 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #24 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #25 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #26 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #29 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #31 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Connection #42 is still name resolving, can't reuse
+[my_curl_debug_callback] This: 525811577016 TEXT :Hostname exchange2016.com was found in DNS cache
+[my_curl_debug_callback] This: 525811577016 TEXT :  Trying 10.100.87.8:443...
+[my_curl_debug_callback] This: 525811577016 TEXT :Connected to exchange2016.com () port 443 (#43)
+```
+
+#### normal logs
+
+Re-using existing connection! (43) for NTLM challenge
+
+```
+[my_curl_debug_callback] This: 5412312248 TEXT :Connection #43 to host exchange2013.com left intact
+[my_curl_debug_callback] This: 5412312248 TEXT :Issue another request to this URL: 'https://exchange2013.com/EWS/Exchange.asmx'
+[my_curl_debug_callback] This: 5412312248 TEXT :Found bundle for host exchange2013.com: 0x2823928e0 [serially]
+[my_curl_debug_callback] This: 5412312248 TEXT :Re-using existing connection! (#43) with host exchange2013.com
+[my_curl_debug_callback] This: 5412312248 TEXT :Connected to exchange2013.com () port 443 (#43)
+```
+
+### Connection cache is full, closing the oldest one. Which cause could not re-use the connection for NTLM challenge
+
+#### Root Cause
+
+- Connection cache is full, closing the oldest one. So create a new connection 50, which cause NTLM challenge failed, and cause once more redirect. But why Closing connection 49, it seems to the latest one not oldest one.
+
+- websocket connections make the connection cache full, and can not be closed
+
+As following code snippet, for websocket connection we will set the connect_only as true, which will never be candidate connection for close.
+
+```
+// conncache.c
+struct connectdata *
+Curl_conncache_extract_oldest(struct Curl_easy *data) {
+    
+    ....
+    
+    while(curr) {
+      conn = curr->ptr;
+
+      if(!CONN_INUSE(conn) && !conn->data && !conn->bits.close &&
+         !conn->bits.connect_only) {
+        /* Set higher score for the age passed since the connection was used */
+        score = Curl_timediff(now, conn->lastused);
+
+        if(score > highscore) {
+          highscore = score;
+          conn_candidate = conn;
+          bundle_candidate = bundle;
+        }
+      }
+      curr = curr->next;
+    }
+    
+    ....
+    
+}
+```
+
+#### abnormal logs
+
+```
+[my_curl_debug_callback] This: 5412314808 TEXT :Connected to exchange2013.com () port 443 (#49)
+[my_curl_debug_callback] This: 5412314808 TEXT :ALPN, offering http/1.1
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.3 (OUT), TLS handshake, Client hello (1):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.3 (IN), TLS handshake, Server hello (2):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (IN), TLS handshake, Certificate (11):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (IN), TLS handshake, Server finished (14):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (OUT), TLS handshake, Finished (20):
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (IN), TLS handshake, Finished (20):
+[my_curl_debug_callback] This: 5412314808 TEXT :SSL connection using TLSv1.2 / ECDHE-RSA-AES256-SHA384
+[my_curl_debug_callback] This: 5412314808 TEXT :ALPN, server did not agree to a protocol
+[my_curl_debug_callback] This: 5412314808 TEXT :Server certificate:
+[my_curl_debug_callback] This: 5412314808 TEXT : subject: CN=*.com
+[my_curl_debug_callback] This: 5412314808 TEXT : start date: Apr 22 00:00:00 2020 GMT
+[my_curl_debug_callback] This: 5412314808 TEXT : expire date: Apr 22 23:59:59 2022 GMT
+[my_curl_debug_callback] This: 5412314808 TEXT : subjectAltName: host "exchange2013.com" matched cert's "*.com"
+[my_curl_debug_callback] This: 5412314808 TEXT : issuer: C=GB; ST=Greater Manchester; L=Salford; O=Sectigo Limited; CN=Sectigo RSA Domain Validation Secure Server CA
+[my_curl_debug_callback] This: 5412314808 TEXT : SSL certificate verify ok.
+[my_curl_debug_callback] This: 5412314808 TEXT :Server auth using NTLM with user 'foo-bar'
+[my_curl_debug_callback] This: 5412314808 HEADER_OUT :POST /EWS/Exchange.asmx HTTP/1.1
+[my_curl_debug_callback] This: 5412314808 TEXT :Mark bundle as not supporting multiuse
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :HTTP/1.1 401 Unauthorized
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :Server: Microsoft-IIS/7.5
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :request-id: 9811034b-32e4-45e5-b300-5be1efb8d8f3
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :WWW-Authenticate: balabalabalabalabalabalabalabalabalabala
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :WWW-Authenticate: Negotiate
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :X-Powered-By: ASP.NET
+my_curl_debug_callback] This: 5412314808 HEADER_IN :X-FEServer: WIN-1TRC9B5MS6A
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :Date: Thu, 16 Jul 2020 19:02:54 GMT
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :Content-Length: 0
+[my_curl_debug_callback] This: 5412314808 HEADER_IN :
+[my_curl_debug_callback] This: 5412314808 TEXT :Connection cache is full, closing the oldest one.
+[my_curl_debug_callback] This: 5412314808 TEXT :Closing connection 49
+[my_curl_debug_callback] This: 5412314808 TEXT :TLSv1.2 (OUT), TLS alert, close notify (256):
+[my_curl_debug_callback] This: 5412314808 TEXT :Issue another request to this URL: 'https://exchange2013.com/EWS/Exchange.asmx'
+[my_curl_debug_callback] This: 5412314808 TEXT :Found bundle for host exchange2013.com: 0x2823b9680 [serially]
+[my_curl_debug_callback] This: 5412314808 TEXT :Hostname exchange2013.com was found in DNS cache
+[my_curl_debug_callback] This: 5412314808 TEXT :  Trying 10.100.87.7:443...
+[my_curl_debug_callback] This: 5412314808 TEXT :Connected to exchange2013.com () port 443 (#50)
+```
+
+出来混早晚是要还的，技术债务也是如此。少一些 Workaround，多一点 Root Cause。
