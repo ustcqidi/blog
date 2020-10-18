@@ -37,10 +37,15 @@ libcurl 作为动态库一部分，在动态库卸载时如果有 pending 的 dn
 
 Client 和 Server 需要几次“握手”交换认证信息，并且要求这几次“握手”的连接实例是同一个。http(s) 是无状态连接，libcurl 本身也有 connection reuse 机制，所以可能有各种原因会导致，交换 NTLM 认证信息的几次连接可能使用的不是同一个实例，这就会导致认证失败。
 
-我提交过两个 issue 给 libcurl，不过最终查下来都是我们使用方式的问题。
+我提交过几个 issue 给 libcurl，5911 这个 issue 是官方其中一个版本引入的 regression，我提了一个 PR Fix 了
 
+Issues:
 - https://github.com/curl/curl/issues/3647
 - https://github.com/curl/curl/issues/5693
+- https://github.com/curl/curl/issues/5911
+
+Pull Request: 
+- https://github.com/curl/curl/pull/5914
 
 这些使用上的坑也具有指导意义。
 
@@ -171,7 +176,7 @@ my_curl_debug_callback] This: 5412314808 HEADER_IN :X-FEServer: WIN-1TRC9B5MS6A
 
 ### NTLM Authenticate always failed in curl 7.71.1 if Use proxy without username and password
 
-开启抓包工具使用没有用户名或密码的代理服务器，NTLM 就认证就会失败。给官方提了一个 Issue: https://github.com/curl/curl/issues/5911
+开启抓包工具使用没有用户名或密码的代理服务器，NTLM 就认证就会失败。
 
 分析如下：
 
@@ -228,8 +233,5 @@ Line 6445: [18048:16268:09-04/10:49:35.029:INFO:(389)]TEXT :Connected to 127.0.0
 Line 6447: [18048:16268:09-04/10:49:35.029:INFO:(389)]TEXT :allocate connect buffer!
 Line 6449: [18048:16268:09-04/10:49:35.029:INFO:(389)]TEXT :Establish HTTP proxy tunnel to xxx.com:443
 ```
-
-#### Fix
-给官方提了一个 fix patch: https://github.com/curl/curl/pull/5914
 
 出来混早晚是要还的，技术债务也是如此。少一些 Workaround，多一点 Root Cause。
