@@ -169,4 +169,67 @@ my_curl_debug_callback] This: 5412314808 HEADER_IN :X-FEServer: WIN-1TRC9B5MS6A
 [my_curl_debug_callback] This: 5412314808 TEXT :Connected to exchange2013.com () port 443 (#50)
 ```
 
+### NTLM Authenticate always failed in curl 7.71.1 if Use proxy without username and password
+
+开启抓包工具使用没有用户名或密码的代理服务器，NTLM 就认证就会失败。给官方提了一个 Issue: https://github.com/curl/curl/issues/5911
+
+分析如下：
+
+this code snippet seems to the condition alway as true if i have config proxy server without password, which maybe cause failed to reuse the connections for NTLM challenge.
+
+```
+#ifndef CURL_DISABLE_PROXY
+        /* Same for Proxy NTLM authentication */
+        if(wantProxyNTLMhttp) {
+          /* Both check->http_proxy.user and check->http_proxy.passwd can be
+           * NULL */
+          if(!check->http_proxy.user || !check->http_proxy.passwd)
+            continue;
+
+          if(strcmp(needle->http_proxy.user, check->http_proxy.user) ||
+             strcmp(needle->http_proxy.passwd, check->http_proxy.passwd))
+            continue;
+        }
+        else if(check->proxy_ntlm_state != NTLMSTATE_NONE) {
+          /* Proxy connection is using NTLM auth but we don't want NTLM */
+          continue;
+        }
+#endif
+```
+
+#### abnormal logs
+
+```
+Line 6374: [18048:16268:09-04/10:49:34.941:INFO:(389)]TEXT :Found bundle for host xxx.com: 0xf781740 [serially]
+Line 6376: [18048:16268:09-04/10:49:34.941:INFO:(389)]TEXT :Re-using existing connection! (#8) with proxy 127.0.0.1
+Line 6378: [18048:16268:09-04/10:49:34.941:INFO:(389)]TEXT :Connected to 127.0.0.1 (127.0.0.1) port 8888 (#8)
+Line 6380: [18048:16268:09-04/10:49:34.941:INFO:(389)]TEXT :Server auth using NTLM with user 'balabala'
+Line 6382: [18048:16268:09-04/10:49:34.941:INFO:(389)]HEADER_OUT :POST /EWS/Exchange.asmx HTTP/1.1
+Line 6385: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :Mark bundle as not supporting multiuse
+Line 6387: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :HTTP/1.1 401 Unauthorized
+Line 6391: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :Server: Microsoft-IIS/8.5
+Line 6395: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :request-id: 8ae68c1b-25f1-449f-b911-0808b135cb44
+Line 6399: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :WWW-Authenticate: NTLM TlRMTVNTUAACAAAAGAAYADgAAAAFgomiPXW5AdNSBywAAAAAAAAAAAoBCgFQAAAABgOAJQAAAA9FAFgAQwBIAEEATgBHAEUAMgAwADEANgACABgARQBYAEMASABBAE4ARwBFADIAMAAxADYAAQAeAFcASQBOAC0ARgA2AEYAMgBOAEkATQBOAFMASABNAAQAMABlAHgAYwBoAGEAbgBnAGUAMgAwADEANgAuAHMAdQB6AGgAbwB1AC4AegBvAG8AbQADAFAAVwBJAE4ALQBGADYARgAyAE4ASQBNAE4AUwBIAE0ALgBlAHgAYwBoAGEAbgBnAGUAMgAwADEANgAuAHMAdQB6AGgAbwB1AC4AegBvAG8AbQAFADAAZQB4AGMAaABhAG4AZwBlADIAMAAxADYALgBzAHUAegBoAG8AdQAuAHoAbwBvAG0ABwAIAEvkOQZmgtYBAAAAAA==
+Line 6403: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :WWW-Authenticate: Negotiate
+Line 6407: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :X-Powered-By: ASP.NET
+Line 6411: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :X-FEServer: WIN-F6F2NIMNSHM
+Line 6415: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :Date: Fri, 04 Sep 2020 02:49:35 GMT
+Line 6419: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :Content-Length: 0
+Line 6423: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :Proxy-Support: Session-Based-Authentication
+Line 6427: [18048:16268:09-04/10:49:35.018:DEBUG:(362)]HEADER_IN :
+Line 6429: [18048:16268:09-04/10:49:35.018:INFO:(389)]HEADER_IN :
+Line 6431: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :Connection #8 to host 127.0.0.1 left intact
+Line 6433: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :Issue another request to this URL: 'https://xxx.com/EWS/Exchange.asmx'
+Line 6435: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :Found bundle for host xxx.com: 0xf781740 [serially]
+Line 6437: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :NTLM-proxy picked AND auth done set, clear picked!
+Line 6439: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :Hostname 127.0.0.1 was found in DNS cache
+Line 6441: [18048:16268:09-04/10:49:35.018:INFO:(389)]TEXT :  Trying 127.0.0.1:8888...
+Line 6445: [18048:16268:09-04/10:49:35.029:INFO:(389)]TEXT :Connected to 127.0.0.1 (127.0.0.1) port 8888 (#13)
+Line 6447: [18048:16268:09-04/10:49:35.029:INFO:(389)]TEXT :allocate connect buffer!
+Line 6449: [18048:16268:09-04/10:49:35.029:INFO:(389)]TEXT :Establish HTTP proxy tunnel to xxx.com:443
+```
+
+#### Fix
+给官方提了一个 fix patch: https://github.com/curl/curl/pull/5914
+
 出来混早晚是要还的，技术债务也是如此。少一些 Workaround，多一点 Root Cause。
