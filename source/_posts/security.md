@@ -23,3 +23,11 @@ tags: [安全]
 ### 第三方开源库 License 审核
 
 ### 政策法规方面
+
+### 代码缺陷
+
+#### Buffer Overflow
+
+#### User after free
+
+#### Double free
