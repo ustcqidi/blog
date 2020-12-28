@@ -95,12 +95,4 @@ https://github.com/curl/curl/pull/5914
 
 ### 音乐
 
-![](./summary-2020/neteasy_music1.jpeg)
-
-![](./summary-2020/neteasy_music2.jpeg)
-
-![](./summary-2020/neteasy_music3.jpeg)
-
-![](./summary-2020/neteasy_music4.jpeg)
-
-![](./summary-2020/neteasy_music5.jpeg)
+![](./summary-2020/neteasy_music.jpeg)
