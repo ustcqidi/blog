@@ -121,4 +121,18 @@ https://github.com/curl/curl/pull/5914
 
 ![](./summary-2020/douban.jpg)
 
-### 支付宝
+### 微信读书
+
+![](./summary-2020/weread.png)
+
+### 理财
+
+![](./summary-2020/alipay.png)
+
+### bilibili
+
+![](./summary-2020/bilibili.png)
+
+### 跑步
+
+![](./summary-2020/joyrun.png)
